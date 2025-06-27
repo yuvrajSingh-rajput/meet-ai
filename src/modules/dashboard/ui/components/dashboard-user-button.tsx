@@ -24,14 +24,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 
 const DashboardUserButton = () => {
-  const { data, isPending } = authClient.useSession();
+  const isMobile = useIsMobile();
   const router = useRouter();
+  const { data, isPending } = authClient.useSession();
 
   if (isPending || !data?.user) {
     return null;
   }
-
-  const isMobile = useIsMobile();
 
   const onLogout = async () => {
     await authClient.signOut({
