@@ -36,10 +36,29 @@ export const AgentForm = ({
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}),);
-        
-        if(initialValues?.id) {
-          await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({ id: initialValues.id }));
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+
+        onSuccess?.();
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to create agent");
+      },
+    }) 
+  );
+
+  const updateAgent = useMutation(
+    trpc.agents.update.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+
+        if (initialValues?.id) {
+          await queryClient.invalidateQueries(
+            trpc.agents.getOne.queryOptions({ id: initialValues.id })
+          );
         }
         onSuccess?.();
       },
@@ -58,10 +77,11 @@ export const AgentForm = ({
   });
 
   const isEdit = !!initialValues?.id;
-  const isPending = createAgent.isPending;
+  const isPending = createAgent.isPending || updateAgent.isPending;
 
   const onSubmit = (values: z.infer<typeof agentInsertSchema>) => {
     if (isEdit) {
+      updateAgent.mutate({...values, id: initialValues.id})
       console.log("TODO: update agent");
     } else {
       createAgent.mutate(values);
@@ -95,21 +115,26 @@ export const AgentForm = ({
             <FormItem>
               <FormLabel>Instructions</FormLabel>
               <FormControl>
-                <Textarea placeholder="e.g. You are a helpful assistant that can answer questions and help with assignments" {...field} />
+                <Textarea
+                  placeholder="e.g. You are a helpful assistant that can answer questions and help with assignments"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
               <div className="flex justify-between gap-x-2">
                 {onCancel && (
-                    <Button variant="ghost" disabled={isPending} type="button" onClick={() => onCancel()} >
-                        Cancel
-                    </Button>
-                )}
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="ml-2">
-                    {isEdit ? "Update" : "Create"}
+                  <Button
+                    variant="ghost"
+                    disabled={isPending}
+                    type="button"
+                    onClick={() => onCancel()}
+                  >
+                    Cancel
                   </Button>
+                )}
+                <Button type="submit" disabled={isPending} className="ml-2">
+                  {isEdit ? "Update" : "Create"}
+                </Button>
               </div>
             </FormItem>
           )}
