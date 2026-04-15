@@ -122,7 +122,7 @@ export const SignUpView = () => {
                         <FormControl>
                           <Input
                             type="text"
-                            placeholder="Apoorva Singh"
+                            placeholder="Yuvraj Singh"
                             {...field}
                           />
                         </FormControl>
@@ -141,7 +141,7 @@ export const SignUpView = () => {
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="apoorva@gmail.com"
+                            placeholder="yuvraj@gmail.com"
                             {...field}
                           />
                         </FormControl>
