@@ -1,13 +1,20 @@
 "use client";
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { OctagonAlertIcon } from "lucide-react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -16,29 +23,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { useForm } from "react-hook-form";
-import {FaGithub, FaGoogle} from "react-icons/fa";
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, { message: "Name is required" }),
-    email: z.string().email(),
-    password: z.string().min(1, { message: "Password is required" }),
-    confirmPassword: z.string().min(1, { message: "Password is required" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+const formSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email(),
+  password: z.string().min(1, { message: "Password is required" }),
+  confirmPassword: z.string().min(1, { message: "Password is required" }),
+})
+.refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
-const SignUpView = () => {
-    const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+export const SignUpView = () => {
+  const router = useRouter();
+
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,6 +60,7 @@ const SignUpView = () => {
         name: data.name,
         email: data.email,
         password: data.password,
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -66,14 +68,15 @@ const SignUpView = () => {
           router.push("/");
         },
         onError: ({ error }) => {
-          setError(error.message);
           setPending(false);
+          setError(error.message)
         },
       }
     );
+
   };
 
-  const onSocial = (provider: "google" | "github") => {
+  const onSocial = (provider: "github" | "google") => {
     setError(null);
     setPending(true);
 
@@ -87,8 +90,8 @@ const SignUpView = () => {
           setPending(false);
         },
         onError: ({ error }) => {
-          setError(error.message);
           setPending(false);
+          setError(error.message)
         },
       }
     );
@@ -102,7 +105,9 @@ const SignUpView = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Let&apos; get started</h1>
+                  <h1 className="text-2xl font-bold">
+                    Let&apos;s get started
+                  </h1>
                   <p className="text-muted-foreground text-balance">
                     Create your account
                   </p>
@@ -115,7 +120,11 @@ const SignUpView = () => {
                       <FormItem>
                         <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input type="text" placeholder="Yunavi" {...field} />
+                          <Input
+                            type="text"
+                            placeholder="Apoorva Singh"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -132,7 +141,7 @@ const SignUpView = () => {
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="yunavi@example.com"
+                            placeholder="apoorva@gmail.com"
                             {...field}
                           />
                         </FormControl>
@@ -185,8 +194,12 @@ const SignUpView = () => {
                     <AlertTitle>{error}</AlertTitle>
                   </Alert>
                 )}
-                <Button type="submit" disabled={pending} className="w-full">
-                  Sign up
+                <Button
+                  disabled={pending}
+                  type="submit"
+                  className="w-full"
+                >
+                  Sign in
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                   <span className="bg-card text-muted-foreground relative z-10 px-2">
@@ -195,8 +208,8 @@ const SignUpView = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Button
-                    onClick={() => onSocial("google")}
                     disabled={pending}
+                    onClick={() => onSocial("google")}
                     variant="outline"
                     type="button"
                     className="w-full"
@@ -204,8 +217,8 @@ const SignUpView = () => {
                     <FaGoogle />
                   </Button>
                   <Button
-                    disabled={pending}
                     onClick={() => onSocial("github")}
+                    disabled={pending}
                     variant="outline"
                     type="button"
                     className="w-full"
@@ -215,11 +228,7 @@ const SignUpView = () => {
                 </div>
                 <div className="text-center text-sm">
                   Already have an account?{" "}
-                  <Link
-                    href="/sign-in"
-                    className="underline underline-offset-4"
-                  >
-                    {" "}
+                  <Link href="/sign-in" className="underline underline-offset-4">
                     Sign in
                   </Link>
                 </div>
@@ -228,18 +237,23 @@ const SignUpView = () => {
           </Form>
 
           <div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92px] " />
-            <p className="text-2xl font-semibold text-white">Meet.AI</p>
+            <Image
+              src="/logo.svg"
+              alt="Image"
+              width={92}
+              height={92}
+              className="h-[92px] w-[92px]"
+            />
+            <p className="text-2xl font-semibold text-white">
+              Meet.AI
+            </p>
           </div>
         </CardContent>
       </Card>
 
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
-        <a href="#"> Terms of Service </a> and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
       </div>
     </div>
   );
 };
-
-export default SignUpView;

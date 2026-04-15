@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { ChevronsUpDownIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   CommandEmpty,
   CommandInput,
@@ -21,9 +21,9 @@ interface Props {
   onSearch?: (value: string) => void;
   value: string;
   placeholder?: string;
-  isSearchable?: string;
-  classname?: string;
-}
+  isSearchable?: boolean;
+  className?: string;
+};
 
 export const CommandSelect = ({
   options,
@@ -31,7 +31,7 @@ export const CommandSelect = ({
   onSearch,
   value,
   placeholder = "Select an option",
-  classname = "",
+  className,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((option) => option.value === value);
@@ -39,21 +39,23 @@ export const CommandSelect = ({
   const handleOpenChange = (open: boolean) => {
     onSearch?.("");
     setOpen(open);
-  }
+  };
 
   return (
     <>
       <Button
         onClick={() => setOpen(true)}
-        variant="outline"
         type="button"
+        variant="outline"
         className={cn(
-          "h-9 justify-between px-2 font-normal",
+          "h-9 justify-between font-normal px-2",
           !selectedOption && "text-muted-foreground",
-          classname
+          className,
         )}
       >
-        <div className="">{selectedOption?.children ?? placeholder}</div>
+        <div>
+          {selectedOption?.children ?? placeholder}
+        </div>
         <ChevronsUpDownIcon />
       </Button>
       <CommandResponsiveDialog
@@ -72,7 +74,7 @@ export const CommandSelect = ({
             <CommandItem
               key={option.id}
               onSelect={() => {
-                onSelect(option.value);
+                onSelect(option.value)
                 setOpen(false);
               }}
             >

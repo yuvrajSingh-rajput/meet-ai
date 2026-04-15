@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/empty-state";
+import { EmptyState } from "@/components/empty-state"
 
 export const CancelledState = () => {
   return (
@@ -9,5 +9,5 @@ export const CancelledState = () => {
         description="This meeting was cancelled"
       />
     </div>
-  );
-};
+  )
+}

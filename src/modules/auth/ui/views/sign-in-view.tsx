@@ -1,14 +1,20 @@
 "use client";
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { OctagonAlertIcon } from "lucide-react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {FaGithub, FaGoogle} from "react-icons/fa";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -17,21 +23,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { useForm } from "react-hook-form";
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-const SignInView = () => {
-    const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+export const SignInView = () => {
+  const router = useRouter();
+
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,6 +51,7 @@ const SignInView = () => {
       {
         email: data.email,
         password: data.password,
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -56,29 +59,29 @@ const SignInView = () => {
           router.push("/");
         },
         onError: ({ error }) => {
-          setError(error.message);
           setPending(false);
+          setError(error.message)
         },
       }
     );
   };
 
-  const onSocial = (provider: "google" | "github") => {
+  const onSocial = (provider: "github" | "google") => {
     setError(null);
     setPending(true);
 
     authClient.signIn.social(
       {
         provider: provider,
-        callbackURL: "/",
+        callbackURL: "/"
       },
       {
         onSuccess: () => {
           setPending(false);
         },
         onError: ({ error }) => {
-          setError(error.message);
           setPending(false);
+          setError(error.message)
         },
       }
     );
@@ -92,7 +95,9 @@ const SignInView = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Welcome Back</h1>
+                  <h1 className="text-2xl font-bold">
+                    Welcome back
+                  </h1>
                   <p className="text-muted-foreground text-balance">
                     Login to your account
                   </p>
@@ -107,7 +112,7 @@ const SignInView = () => {
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="yunavi@example.com"
+                            placeholder="apoorva@gmail.com"
                             {...field}
                           />
                         </FormControl>
@@ -141,7 +146,11 @@ const SignInView = () => {
                     <AlertTitle>{error}</AlertTitle>
                   </Alert>
                 )}
-                <Button type="submit" disabled={pending} className="w-full">
+                <Button
+                  disabled={pending}
+                  type="submit"
+                  className="w-full"
+                >
                   Sign in
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -171,11 +180,7 @@ const SignInView = () => {
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <Link
-                    href="/sign-up"
-                    className="underline underline-offset-4"
-                  >
-                    {" "}
+                  <Link href="/sign-up" className="underline underline-offset-4">
                     Sign up
                   </Link>
                 </div>
@@ -184,18 +189,23 @@ const SignInView = () => {
           </Form>
 
           <div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92px] " />
-            <p className="text-2xl font-semibold text-white">Meet.AI</p>
+            <Image
+              src="/logo.svg"
+              alt="Image"
+              width={92}
+              height={92}
+              className="h-[92px] w-[92px]"
+            />
+            <p className="text-2xl font-semibold text-white">
+              Meet.AI
+            </p>
           </div>
         </CardContent>
       </Card>
 
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
-        <a href="#"> Terms of Service </a> and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
       </div>
     </div>
   );
 };
-
-export default SignInView;

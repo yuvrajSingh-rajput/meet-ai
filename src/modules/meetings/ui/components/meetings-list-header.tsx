@@ -1,15 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { PlusIcon, XCircleIcon } from "lucide-react";
-import { NewMeetingDialog } from "./new-meeting-dialog";
 import { useState } from "react";
-import { MeetingsSearchFilter } from "./meetings-search-filter";
+import { PlusIcon, XCircleIcon } from "lucide-react";
+
+import { DEFAULT_PAGE } from "@/constants";
+import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+
 import { StatusFilter } from "./status-filter";
 import { AgentIdFilter } from "./agent-id-filter";
+import { NewMeetingDialog } from "./new-meeting-dialog";
+import { MeetingsSearchFilter } from "./meetings-search-filter";
 import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { DEFAULT_PAGE } from "@/constants";
 
 export const MeetingsListHeader = () => {
   const [filters, setFilters] = useMeetingsFilters();
@@ -44,7 +46,7 @@ export const MeetingsListHeader = () => {
             <StatusFilter />
             <AgentIdFilter />
             {isAnyFilterModified && (
-              <Button onClick={onClearFilters} variant="outline">
+              <Button variant="outline" onClick={onClearFilters}>
                 <XCircleIcon className="size-4" />
                 Clear
               </Button>

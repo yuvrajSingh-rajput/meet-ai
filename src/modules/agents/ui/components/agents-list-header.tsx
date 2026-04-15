@@ -1,23 +1,29 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { PlusIcon, XCircleIcon } from "lucide-react";
-import { NewAgentDialog } from "./new-agent-dialog";
 import { useState } from "react";
-import { useAgentsFilters } from "../../hooks/use-agents-filters";
-import { AgentsSearchFilter } from "./agent-search-filter";
+import { PlusIcon, XCircleIcon } from "lucide-react";
+
 import { DEFAULT_PAGE } from "@/constants";
+import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-const AgentsListHeader = () => {
+import { NewAgentDialog } from "./new-agent-dialog";
+import { AgentsSearchFilter } from "./agents-search-filter";
+import { useAgentsFilters } from "../../hooks/use-agents-filters";
+
+export const AgentsListHeader = () => {
   const [filters, setFilters] = useAgentsFilters();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isAnyFilterModified = !!filters.search;
 
   const onClearFilters = () => {
-    setFilters({ search: "", page: DEFAULT_PAGE });
-  };
+    setFilters({
+      search: "",
+      page: DEFAULT_PAGE,
+    });
+  }
+
   return (
     <>
       <NewAgentDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
@@ -45,5 +51,3 @@ const AgentsListHeader = () => {
     </>
   );
 };
-
-export default AgentsListHeader;

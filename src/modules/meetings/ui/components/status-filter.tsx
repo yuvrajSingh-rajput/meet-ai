@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 import { CommandSelect } from "@/components/command-select";
+
 import { MeetingStatus } from "../../types";
 import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
 
@@ -19,7 +20,7 @@ const options = [
         <ClockArrowUpIcon />
         {MeetingStatus.Upcoming}
       </div>
-    ),
+    )
   },
   {
     id: MeetingStatus.Completed,
@@ -64,17 +65,15 @@ const options = [
 ];
 
 export const StatusFilter = () => {
-    const [filters, setFilters] = useMeetingsFilters();
+  const [filters, setFilters] = useMeetingsFilters();
 
-    return  (
-        <CommandSelect
-            placeholder="Status"
-            classname="h-9"
-            options={options}
-            onSelect={(value) => setFilters({status: value as MeetingStatus})}
-            value={filters.status ?? ""}
-        >
-
-        </CommandSelect>
-    )
-}
+  return (
+    <CommandSelect
+      placeholder="Status"
+      className="h-9"
+      options={options}
+      onSelect={(value) => setFilters({ status: value as MeetingStatus })}
+      value={filters.status ?? ""}
+    />
+  );
+};

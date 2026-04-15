@@ -1,12 +1,13 @@
 "use client";
+
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Drawer,
   DrawerContent,
@@ -21,7 +22,7 @@ interface ResponsiveDialogProps {
   children: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}
+};
 
 export const ResponsiveDialog = ({
   title,
@@ -40,7 +41,9 @@ export const ResponsiveDialog = ({
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription>{description}</DrawerDescription>
           </DrawerHeader>
-          <div className="p-4">{children}</div>
+          <div className="p-4">
+            {children}
+          </div>
         </DrawerContent>
       </Drawer>
     );

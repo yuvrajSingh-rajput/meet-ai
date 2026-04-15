@@ -1,10 +1,11 @@
 import { JSX, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { ResponsiveDialog } from "@/components/responsive-dialog";
 
 export const useConfirm = (
   title: string,
-  description: string
+  description: string,
 ): [() => JSX.Element, () => Promise<unknown>] => {
   const [promise, setPromise] = useState<{
     resolve: (value: boolean) => void;
@@ -30,7 +31,7 @@ export const useConfirm = (
     handleClose();
   };
 
-  const confirmationDialog = () => (
+  const ConfirmationDialog = () => (
     <ResponsiveDialog
       open={promise !== null}
       onOpenChange={handleClose}
@@ -45,12 +46,15 @@ export const useConfirm = (
         >
           Cancel
         </Button>
-        <Button onClick={handleConfirm} className="w-full lg:w-auto">
+        <Button
+          onClick={handleConfirm}
+          className="w-full lg:w-auto"
+        >
           Confirm
         </Button>
       </div>
     </ResponsiveDialog>
   );
 
-  return [confirmationDialog, confirm];
+  return [ConfirmationDialog, confirm];
 };
