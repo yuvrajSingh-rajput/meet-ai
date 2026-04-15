@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 
 import { ResponsiveDialog } from "@/components/responsive-dialog";
 
-import { MeetingForm } from "./meeting-form";
+import { MeetingForm } from "./meetings-form";
 
 interface NewMeetingDialogProps {
   open: boolean;
